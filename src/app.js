@@ -14,12 +14,12 @@ app.use(express.json());
 app.patch("/api/v1/details/:id",(req,res)=>{
   const {name, mail,number}= req.body;
   const proId=req.params.id;
-  const product=userDetails.find((x) => x.id == proId);
+  let product=userDetails.find((x) => x.id == proId);
   if(product)
   {
-    product= {...product , name,mail, number};
-    userDetails=userDetails.map((x)=> (x.id == proId ? product : x));
-    fs.writeFileSync(`${__dirname}/data/userDetails.json`,JSON.stringify(userDetails));
+    product= {...product , name, "mail-Id": mail, number};
+    const updatedUserDetails=userDetails.map((x)=> (x.id == proId ? product : x));
+    fs.writeFileSync(`${__dirname}/data/userDetails.json`,JSON.stringify(updatedUserDetails));
     return res.send(
       {
         status: "success",
@@ -29,8 +29,8 @@ app.patch("/api/v1/details/:id",(req,res)=>{
     )
   }  
   else{
-    res.status(404).send({status:"failure",message:"User not found!"});
-    
+    res.status(404).send({status:"failed",message:"User not found!"});
+
   }
   
 })
